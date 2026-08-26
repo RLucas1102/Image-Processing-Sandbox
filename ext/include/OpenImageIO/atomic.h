@@ -1,0 +1,95 @@
+// Copyright Contributors to the OpenImageIO project.
+// SPDX-License-Identifier: Apache-2.0
+// https://github.com/AcademySoftwareFoundation/OpenImageIO
+
+
+/////////////////////////////////////////////////////////////////////////
+/// @file   atomic.h
+///
+/// @brief  Wrappers and utilities for atomics.
+/////////////////////////////////////////////////////////////////////////
+
+#pragma once
+
+#include <OpenImageIO/oiioversion.h>
+#include <OpenImageIO/platform.h>
+
+#include <atomic>
+#define OIIO_USE_STDATOMIC 1
+
+
+
+OIIO_NAMESPACE_3_1_BEGIN
+
+using std::atomic;
+using atomic_int = atomic<int>;
+using atomic_ll  = atomic<long long>;
+
+
+
+/// Atomically set avar to the minimum of its current value and bval.
+template<typename T>
+OIIO_FORCEINLINE void
+atomic_min(atomic<T>& avar, const T& bval)
+{
+    do {
+        T a = avar.load();
+        if (a <= bval || avar.compare_exchange_weak(a, bval))
+            break;
+    } while (true);
+}
+
+
+/// Atomically set avar to the maximum of its current value and bval.
+template<typename T>
+OIIO_FORCEINLINE void
+atomic_max(atomic<T>& avar, const T& bval)
+{
+    do {
+        T a = avar.load();
+        if (a >= bval || avar.compare_exchange_weak(a, bval))
+            break;
+    } while (true);
+}
+
+
+
+// Add atomically to a float and return the original value.
+OIIO_FORCEINLINE float
+atomic_fetch_add(atomic<float>& a, float f)
+{
+    do {
+        float oldval = a.load();
+        float newval = oldval + f;
+        if (a.compare_exchange_weak(oldval, newval))
+            return oldval;
+    } while (true);
+}
+
+
+// Add atomically to a double and return the original value.
+OIIO_FORCEINLINE double
+atomic_fetch_add(atomic<double>& a, double f)
+{
+    do {
+        double oldval = a.load();
+        double newval = oldval + f;
+        if (a.compare_exchange_weak(oldval, newval))
+            return oldval;
+    } while (true);
+}
+
+OIIO_NAMESPACE_3_1_END
+
+
+// Compatibility
+OIIO_NAMESPACE_BEGIN
+#ifndef OIIO_DOXYGEN
+using std::atomic;
+using atomic_int = atomic<int>;
+using atomic_ll  = atomic<long long>;
+using v3_1::atomic_fetch_add;
+using v3_1::atomic_max;
+using v3_1::atomic_min;
+#endif
+OIIO_NAMESPACE_END
