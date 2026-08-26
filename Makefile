@@ -3,7 +3,8 @@
 OFILES = \
          base/Matrix.o \
          base/LinearAlgebra.o \
-	 base/StarterViewer.o
+		 base/ImgProc.o \
+	 	 base/StarterViewer.o
 
 ROOTDIR = .
 LIB = $(ROOTDIR)/lib/libstarter.a
