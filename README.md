@@ -1,2 +1,2 @@
-# Image-Processing-Library
+# Image-Processing-Sandbox
 This repo holds all the tools I have implemented to read, write, manipulate 2D images
