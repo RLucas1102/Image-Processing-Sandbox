@@ -11,15 +11,15 @@ namespace image {
             int _Nx;        // Number of pixels along x-axis
             int _Ny;        // Number of pixels along y-axis
             int _Nc;        // Number of channels per pixel
-            long _Nsize;     // How big image is
+            long _Nsize;    // How big img data is
             float* _img;    // Image data stored contiguously
 
         public:
             ImgProc();
             ~ImgProc();
 
-            void clear();
-            void clear(int Nx, int Ny, int Nc);
+            void clear(); // Clean up image data and leave blank
+            void clear(int Nx, int Ny, int Nc); // Clean up image data and reinitialize with new size
 
             // Accessors
             int GetNx() const;
@@ -31,6 +31,7 @@ namespace image {
             // Mutators
             void SetValue(int i, int j, const std::vector<float>& vals); // Set value for specific pixel
 
+            // Deep copy methods
             ImgProc(const ImgProc& img); // Copy constructor
             ImgProc& operator=(const ImgProc& img); // Copy assignment
             
