@@ -90,6 +90,11 @@ class StarterViewer
     //! Get the current frame
     int GetFrame() const { return frame; }
 
+    //! Set the image to be displayed via an ImgProc object (copy)
+    // Used for creating images on the fly
+    void SetDisplayImage(const ImgProc& img);
+    void SetDisplayImage(const std::string& filename);
+
     //! Cascading callback for usage information
     void Usage();
 
