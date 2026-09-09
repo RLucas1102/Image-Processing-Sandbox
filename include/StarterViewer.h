@@ -21,7 +21,10 @@
 #include <string>
 #include <vector>
 
+#include "ImgProc.h"
+
 using namespace std;
+using namespace image;
 
 namespace starter{
 
@@ -120,6 +123,8 @@ class StarterViewer
     void ComputeEyeShift(float dz);
 
     static StarterViewer* pStarterViewer;
+
+    ImgProc image;
 
     // dont allow any of these
     StarterViewer();
