@@ -25,6 +25,7 @@ namespace image {
             int GetNx() const;
             int GetNy() const;
             int GetNc() const;
+            float* GetRaw() const;
 
             std::vector<float> GetValue(int i, int j) const; // Get value for specific pixel
 
@@ -34,9 +35,10 @@ namespace image {
             // Deep copy methods
             ImgProc(const ImgProc& img); // Copy constructor
             ImgProc& operator=(const ImgProc& img); // Copy assignment
+
+            // Open file
+            bool Load(const std::string& filename);
             
-
-
     };
 }
 
