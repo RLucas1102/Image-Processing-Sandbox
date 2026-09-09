@@ -23,9 +23,9 @@
 #include <iostream>
 #include <sstream>
 #include <cmath>
-#include "StarterViewer.h"
 #include <cstring>
 
+#include "StarterViewer.h"
 
 
 using namespace std;
@@ -114,11 +114,14 @@ void StarterViewer::Init( const std::vector<std::string>& args )
       std::strcpy(argv[i], args[i].c_str());
    }
 
+   // Temporary
+   image.Load("images/Red_Blue.png");
+
    string window_title = title;
 
    glutInit( &argc, argv );
    glutInitDisplayMode( display_mode );
-   glutInitWindowSize( width, height );
+   glutInitWindowSize( image.GetNx(), image.GetNy() );
    glutCreateWindow( window_title.c_str() );
    glClearColor(0.5,0.5,0.6,0.0);
 
@@ -154,6 +157,14 @@ void StarterViewer::Display()
 
    glEnable(GL_DEPTH_TEST);
    glDepthRange( camera_near, camera_far );
+
+   if(image.GetNc() == 3) {
+      glDrawPixels( image.GetNx(), image.GetNy(), GL_RGB, GL_FLOAT, image.GetRaw() );
+   }  
+   else { 
+      glDrawPixels( image.GetNx(), image.GetNy(), GL_RGBA, GL_FLOAT, image.GetRaw() );
+   }
+
 }
 
 
