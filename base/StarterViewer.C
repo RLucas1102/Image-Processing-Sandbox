@@ -133,7 +133,6 @@ void StarterViewer::Init( const std::vector<std::string>& args )
 
    // Need to add guards here
    if(std::strcmp(argv[1], "-image") == 0) {
-      std::cout << argv[2] << std::endl;
       SetDisplayImage(argv[2]);
    }
    else {
