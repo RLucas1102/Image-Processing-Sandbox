@@ -25,6 +25,7 @@ namespace image {
             int GetNx() const;
             int GetNy() const;
             int GetNc() const;
+            int GetNsize() const;
             float* GetRaw() const;
 
             std::vector<float> GetValue(int i, int j) const; // Get value for specific pixel

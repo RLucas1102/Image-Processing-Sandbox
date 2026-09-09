@@ -51,6 +51,8 @@ int ImgProc::GetNy() const { return _Ny; }
 
 int ImgProc::GetNc() const { return _Nc; }
 
+int image::ImgProc::GetNsize() const { return _Nsize; }
+
 float* ImgProc::GetRaw() const { return _img; }
 
 std::vector<float> ImgProc::GetValue(int i, int j) const {
@@ -72,9 +74,30 @@ void ImgProc::SetValue(int i, int j, const std::vector<float>& vals) {
     }
 }
 
-ImgProc::ImgProc(const ImgProc& img) {}
+ImgProc::ImgProc(const ImgProc& v) :
+    _Nx (v.GetNx()),
+    _Ny (v.GetNy()),
+    _Nc (v.GetNc()),
+    _Nsize (v.GetNsize())
+{
+    _img = new float[_Nsize];
+    #pragma omp parallel for
+    for( long i=0; i< _Nsize; i++){ _img[i] = v.GetRaw()[i]; }
+}
 
-ImgProc& ImgProc::operator=(const ImgProc& img) {}
+ImgProc& ImgProc::operator=(const ImgProc& v)
+{
+    if( this == &v ){ return *this; }
+    if( _Nx != v.GetNx() || _Ny != v.GetNy() || _Nc != v.GetNc() )
+    {
+        clear(v.GetNx(), v.GetNy(), v.GetNc());
+        _Nsize = v.GetNsize();
+        _img = new float[_Nsize];
+    }
+    #pragma omp parallel for
+    for( long i=0; i<_Nsize; i++){ _img[i] = v.GetRaw()[i]; }
+    return *this;
+}
 
 bool ImgProc::Load(const std::string& filename) {
     bool result = false;
