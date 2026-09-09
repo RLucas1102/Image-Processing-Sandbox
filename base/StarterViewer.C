@@ -114,14 +114,11 @@ void StarterViewer::Init( const std::vector<std::string>& args )
       std::strcpy(argv[i], args[i].c_str());
    }
 
-   // Temporary
-   image.Load("images/Red_Blue.png");
-
    string window_title = title;
 
    glutInit( &argc, argv );
    glutInitDisplayMode( display_mode );
-   glutInitWindowSize( image.GetNx(), image.GetNy() );
+   glutInitWindowSize( width, height );
    glutCreateWindow( window_title.c_str() );
    glClearColor(0.5,0.5,0.6,0.0);
 
@@ -133,6 +130,14 @@ void StarterViewer::Init( const std::vector<std::string>& args )
    glutMotionFunc( &cbMotionFunc );
    glutMouseFunc( &cbMouseFunc );
    glutReshapeFunc( &cbReshapeFunc );
+
+   if(std::strcmp(argv[1], "-image") == 0) {
+      std::cout << argv[2] << std::endl;
+      SetDisplayImage(argv[2]);
+   }
+   else {
+      image.clear(); // Initialize image to appear black
+   }
 
    initialized = true;
    cout << "StarterViewer Initialized\n";
@@ -158,6 +163,7 @@ void StarterViewer::Display()
    glEnable(GL_DEPTH_TEST);
    glDepthRange( camera_near, camera_far );
 
+   // Draws pixels to GLUT window for 3 and 4 channel images
    if(image.GetNc() == 3) {
       glDrawPixels( image.GetNx(), image.GetNy(), GL_RGB, GL_FLOAT, image.GetRaw() );
    }  
@@ -167,6 +173,17 @@ void StarterViewer::Display()
 
 }
 
+void StarterViewer::SetDisplayImage(const ImgProc &img)
+{
+   image = img;
+   glutReshapeWindow(image.GetNx(), image.GetNy()); // Need to do a call to glutReshapeWindow; Reshape only updates viewport when window changes
+}
+
+void StarterViewer::SetDisplayImage(const std::string &filename)
+{
+   image.Load(filename);
+   glutReshapeWindow(image.GetNx(), image.GetNy()); // Need to do a call to glutReshapeWindow; Reshape only updates viewport when window changes
+}
 
 
 void StarterViewer::Reshape( int w, int h )
