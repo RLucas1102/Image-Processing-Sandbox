@@ -27,11 +27,13 @@ void ImgProc::clear() {
 
 void ImgProc::clear(int Nx, int Ny, int Nc) {
     clear();
+    
     _Nx = Nx;
     _Ny = Ny;
     _Nc = Nc;
+
     _Nsize = (long)_Nx * (long)_Ny * (long)_Nc;
-    _img = new float[_Nsize];
+    _img   = new float[_Nsize];
 
     #pragma omp parallel for
     for(long i = 0; i < _Nsize; i++) {
