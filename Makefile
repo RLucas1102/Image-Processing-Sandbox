@@ -9,7 +9,7 @@ OFILES = \
 ROOTDIR = .
 LIB = $(ROOTDIR)/lib/libstarter.a
 
-GLLDFLAGS     = -lglut -lGL -lm -lGLU -lOpenImageIO
+GLLDFLAGS     = -lglut -lGL -lm -lGLU -lOpenImageIO -lOpenImageIO_Util
 
 CXX = g++ -Wall -g -O1 -fPIC $(DEFINES) -fopenmp -std=c++17
 
