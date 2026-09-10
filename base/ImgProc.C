@@ -99,6 +99,7 @@ ImgProc& ImgProc::operator=(const ImgProc& v)
     return *this;
 }
 
+// A variation of the method used in OpenImageIO documentation
 bool ImgProc::Load(const std::string& filename) {
     bool result = false;
     
@@ -125,6 +126,24 @@ bool ImgProc::Load(const std::string& filename) {
     
     return result;
 
+}
+
+// From OpenImageIO documentation
+bool ImgProc::Write( const std::string& filename) const {
+
+    std::unique_ptr<ImageOutput> out = ImageOutput::create(filename.c_str());
+    
+    if (!out) { return false; } // error
+    
+    ImageSpec spec(_Nx, _Ny, _Nc, TypeDesc::FLOAT);
+    
+    out->open(filename.c_str(), spec);
+    
+    out->write_image(TypeDesc::FLOAT, _img);
+    
+    out->close();
+    
+    return true;
 }
 
 

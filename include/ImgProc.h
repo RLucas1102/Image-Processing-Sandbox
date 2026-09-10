@@ -39,6 +39,9 @@ namespace image {
 
             // Open file
             bool Load(const std::string& filename);
+
+            // Write file
+            bool Write(const std::string& filename) const;
             
     };
 }
