@@ -214,6 +214,8 @@ void StarterViewer::Keyboard( unsigned char key, int x, int y )
          camera_fov *= 1.01;
          if( camera_fov > 170.0){ camera_fov = 170.0; }
 	 break;
+      case 'j':
+         image.Write("images/demomakeanewfile.jpg");
       case '+':
       case '=':
          ComputeEyeShift(0.07);
