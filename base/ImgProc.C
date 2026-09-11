@@ -1,3 +1,16 @@
+/***********************************************************************
+ * 
+ * ImgProc.C
+ * 
+ * Desc: ImgProc acts a robust data container to load, write, and 
+ *       manipulate image data by using OpenImageIO
+ * 
+ * Created by: Lucas Robenolt
+ * 
+ * 
+ ***********************************************************************/
+
+
 #include <vector>
 #include <OpenImageIO/imageio.h>
 
