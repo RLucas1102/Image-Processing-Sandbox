@@ -54,8 +54,15 @@ namespace image {
 
             // Write file
             bool Write(const std::string& filename) const;
+
+            // Manipulation
+            // Gamma
+            void gamma(float s);
             
     };
+
+    void gamma(float s, ImgProc& img);
+
 }
 
 #endif

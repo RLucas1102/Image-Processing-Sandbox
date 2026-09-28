@@ -19,6 +19,8 @@
 using namespace OIIO;
 using namespace image;
 
+// Constructor/Destructor
+//----------------------------------------------------------------
 ImgProc::ImgProc() :
     _Nx(0),
     _Ny(0),
@@ -29,6 +31,10 @@ ImgProc::ImgProc() :
 
 ImgProc::~ImgProc() { clear(); }
 
+//----------------------------------------------------------------
+
+// Clear Operations
+//----------------------------------------------------------------
 void ImgProc::clear() {
     if (_img != 0) {
         delete[] _img;
@@ -57,6 +63,11 @@ void ImgProc::clear(int Nx, int Ny, int Nc) {
         _img[i] = 0;
     }
 }
+
+//----------------------------------------------------------------
+
+// Accessors/Mutators
+//----------------------------------------------------------------
 
 int ImgProc::GetNx() const { return _Nx; }
 
@@ -87,6 +98,10 @@ void ImgProc::SetValue(int i, int j, const std::vector<float>& vals) {
     }
 }
 
+//----------------------------------------------------------------
+
+// Copy constructor/assignment
+//----------------------------------------------------------------
 ImgProc::ImgProc(const ImgProc& v) :
     _Nx (v.GetNx()),
     _Ny (v.GetNy()),
@@ -111,6 +126,11 @@ ImgProc& ImgProc::operator=(const ImgProc& v)
     for( long i=0; i<_Nsize; i++){ _img[i] = v.GetRaw()[i]; }
     return *this;
 }
+
+//----------------------------------------------------------------
+
+// Load/Write Operations
+//----------------------------------------------------------------
 
 // A variation of the method used in OpenImageIO documentation
 bool ImgProc::Load(const std::string& filename) {
@@ -159,6 +179,29 @@ bool ImgProc::Write( const std::string& filename) const {
     return true;
 }
 
+//----------------------------------------------------------------
+
+// Image Manipulation operations (internal)
+//----------------------------------------------------------------
+void ImgProc::gamma(float s) 
+{
+    #pragma omp parallel for
+    for (long i = 0; i < _Nsize; i++) {
+        _img[i] = std::pow(_img[i], s);
+    }
+}
+
+//----------------------------------------------------------------
+
+// Image Manipulation operations (external)
+//----------------------------------------------------------------
+void image::gamma(float s, ImgProc &img)
+{
+    img.gamma(s);
+}
+
+//----------------------------------------------------------------
+
 
 /**
  * Notes:
@@ -169,9 +212,14 @@ bool ImgProc::Write( const std::string& filename) const {
  *     the number by the sizeof() the type. So, the offset for the image will be out of memory if
  *     scanlinesize is used (6000 * 4 = 24000 Bad -> 1500 * 4 = 6000 Good).
  * 
+ * [2] Doing an internal/external hybrid for class operations has several benefits
+ *     1. Allows nested called like gamma(bias(copy(img)))
+ *     2. Operation can be parallel friendly
+ *     3. Allows implicit type casting
  * 
- * 
- * 
+ * [3] Passing by const type& allows for temporary variables like literals and
+ *     function returns to be passed into functions directly, essentially passing
+ *     by value, and high perfomance with passing the pointer to the object
  * 
  * 
  */
