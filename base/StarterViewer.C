@@ -213,9 +213,16 @@ void StarterViewer::Keyboard( unsigned char key, int x, int y )
       case 'F':
          camera_fov *= 1.01;
          if( camera_fov > 170.0){ camera_fov = 170.0; }
-	 break;
+	      break;
       case 'j':
          image.Write("images/demomakeanewfile.jpg");
+         break;
+      case 'g':
+         gamma(0.9, image);
+         break;
+      case 'G':
+         gamma(1.111111, image);
+         break;
       case '+':
       case '=':
          ComputeEyeShift(0.07);
@@ -225,14 +232,14 @@ void StarterViewer::Keyboard( unsigned char key, int x, int y )
          ComputeEyeShift(-0.07);
          break;
       case 'r':
-	     Reset();
-        break;
+	      Reset();
+         break;
       case 'h':
-	     Home();
-      break;
+	      Home();
+         break;
       case 'u':
-	     Usage();
-      break;
+	      Usage();
+         break;
    }
 }
 
