@@ -32,7 +32,7 @@ test: $(OFILES)
     -o bin/test
 
 clean:
-	rm -rf bin/simple_viewer *.o base/*.o base/*~ include/*~ $(LIB)  *~ 
+	rm -rf bin/simple_viewer bin/test *.o base/*.o base/*~ include/*~ $(LIB)  *~ 
 
 
 
