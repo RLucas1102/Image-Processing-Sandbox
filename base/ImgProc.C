@@ -19,8 +19,9 @@
 using namespace OIIO;
 using namespace image;
 
-// Constructor/Destructor
-//----------------------------------------------------------------
+// --------
+// ImgProc
+// --------
 ImgProc::ImgProc() :
     _Nx(0),
     _Ny(0),
@@ -31,10 +32,6 @@ ImgProc::ImgProc() :
 
 ImgProc::~ImgProc() { clear(); }
 
-//----------------------------------------------------------------
-
-// Clear Operations
-//----------------------------------------------------------------
 void ImgProc::clear() {
     if (_img != 0) {
         delete[] _img;
@@ -63,11 +60,6 @@ void ImgProc::clear(int Nx, int Ny, int Nc) {
         _img[i] = 0;
     }
 }
-
-//----------------------------------------------------------------
-
-// Accessors/Mutators
-//----------------------------------------------------------------
 
 int ImgProc::GetNx() const { return _Nx; }
 
@@ -98,10 +90,6 @@ void ImgProc::SetValue(int i, int j, const std::vector<float>& vals) {
     }
 }
 
-//----------------------------------------------------------------
-
-// Copy constructor/assignment
-//----------------------------------------------------------------
 ImgProc::ImgProc(const ImgProc& v) :
     _Nx (v.GetNx()),
     _Ny (v.GetNy()),
@@ -126,11 +114,6 @@ ImgProc& ImgProc::operator=(const ImgProc& v)
     for( long i=0; i<_Nsize; i++){ _img[i] = v.GetRaw()[i]; }
     return *this;
 }
-
-//----------------------------------------------------------------
-
-// Load/Write Operations
-//----------------------------------------------------------------
 
 // A variation of the method used in OpenImageIO documentation
 bool ImgProc::Load(const std::string& filename) {
@@ -179,10 +162,6 @@ bool ImgProc::Write( const std::string& filename) const {
     return true;
 }
 
-//----------------------------------------------------------------
-
-// Image Manipulation operations (internal)
-//----------------------------------------------------------------
 void ImgProc::gamma(float s) 
 {
     #pragma omp parallel for
@@ -191,13 +170,58 @@ void ImgProc::gamma(float s)
     }
 }
 
+void ImgProc::unboundedLinearConvolution(const Stencil &stencil, ImgProc &out) const
+{
+    out.clear( this->GetNx(), this->GetNy(), this->GetNc() );
+
+    for( int j=0;j<out.GetNy();j++)
+    { 
+        #pragma omp parallel for
+        for(int i=0;i<out.GetNx();i++)
+        {
+            std::vector<float> pixel(out.GetNc(),0.0);
+            std::vector<float> sample(this->GetNc(),0.0);
+
+            for(int jj=-stencil.getHalfW();jj<=stencil.getHalfW();jj++)
+            {
+                int stencilj = jj + stencil.getHalfW();
+                int jjj = j + jj;
+                if(jjj < 0 ){ jjj += out.GetNy(); }
+                if(jjj >= out.GetNy() ){ jjj -= out.GetNy(); }
+
+                for(int ii=-stencil.getHalfW();ii<=stencil.getHalfW();ii++)
+                {
+                    int stencili = ii + stencil.getHalfW();
+                    int iii = i + ii;
+                    if(iii < 0 ){ iii += out.GetNx(); }
+                    if(iii >= out.GetNx() ){ iii -= out.GetNx(); }
+                    const float& stencil_value = stencil(stencili, stencilj);
+                    sample = this->GetValue(iii,jjj);
+                    for(size_t c=0;c<sample.size();c++){ pixel[c] += sample[c] * stencil_value; }
+                }
+            }
+            
+            out.SetValue(i,j,pixel);
+        }
+    }
+}
+
 //----------------------------------------------------------------
 
-// Image Manipulation operations (external)
-//----------------------------------------------------------------
+// ----------------
+// Helper Functions
+// -----------------
+
+// Pixel-by-pixel image manipulation
 void image::gamma(float s, ImgProc &img)
 {
     img.gamma(s);
+}
+
+// Convolution image manipulation
+void image::unboundedLinearConvolution(const Stencil& stencil, const ImgProc& in, ImgProc& out) 
+{
+    in.unboundedLinearConvolution(stencil, out);
 }
 
 //----------------------------------------------------------------

@@ -15,8 +15,13 @@
 
 #include <vector>
 
+#include "Stencil.h"
+
 namespace image {
 
+    // ImgProc
+    // Main image class to create and store image data
+    // Can manipulate image data in different ways
     class ImgProc
     {
         private:
@@ -58,10 +63,25 @@ namespace image {
             // Manipulation
             // Gamma
             void gamma(float s);
+
+            // Linear Filtering
+            void unboundedLinearConvolution(const Stencil& stencil, ImgProc& out) const;
             
     };
 
+    // -------------------------------------------------------------------
+
+    // Helper functions
+    // This section will be divided into different sections
+
+    // Pixel-by-Pixel image manipulation
     void gamma(float s, ImgProc& img);
+
+    // Convolution image manipulation
+    void unboundedLinearConvolution(const Stencil& stencil, const ImgProc& in, ImgProc& out);
+
+    // -------------------------------------------------------------------
+
 
 }
 
