@@ -35,19 +35,14 @@ namespace image {
 
     // -------------------------------------------------------------------
 
-    // Defining SSP to be a shared pointer of a stencil
-    using SSP = std::shared_ptr<Stencil>;
-    
-    // -------------------------------------------------------------------
-
     // Helper functions
     // Functions to create and work with stencils outside of class
 
-    // Create stencil
-    SSP stencil(int halfwidth);
-
     // Find stencil based on halfwidth
     int stencilDim(int halfwidth);
+
+    // Create a blur stencil
+    Stencil blur(float val);
 
     // -------------------------------------------------------------------
 

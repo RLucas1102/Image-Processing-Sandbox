@@ -43,14 +43,27 @@ void image::Stencil::print()
 // -----------------
 // Helper Functions
 // -----------------
-SSP image::stencil(int halfwidth)
-{
-    return std::make_shared<Stencil>(halfwidth);
-}
-
 int image::stencilDim(int halfwidth)
 {
     return 2 * halfwidth + 1;
+}
+
+Stencil image::blur(float val)
+{
+    Stencil result = Stencil(1);
+
+    result(0,0) = val;
+    result(0,1) = val;
+    result(0,2) = val;
+    result(1,0) = val;
+    result(1,1) = val;
+    result(1,2) = val;
+    result(2,0) = val;
+    result(2,1) = val;
+    result(2,2) = val;
+
+    return result;
+    
 }
 
 // -------------------------------------------------------------------
