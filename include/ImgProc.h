@@ -66,6 +66,7 @@ namespace image {
 
             // Linear Filtering
             void unboundedLinearConvolution(const Stencil& stencil, ImgProc& out) const;
+            void boundedLinearConvolution(const Stencil& stencil, ImgProc& out) const;
             
     };
 
@@ -79,6 +80,7 @@ namespace image {
 
     // Convolution image manipulation
     void unboundedLinearConvolution(const Stencil& stencil, const ImgProc& in, ImgProc& out);
+    void boundedLinearConvolution(const Stencil& stencil, const ImgProc& in, ImgProc& out);
 
     // -------------------------------------------------------------------
 

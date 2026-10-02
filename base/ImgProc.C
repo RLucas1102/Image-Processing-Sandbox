@@ -206,6 +206,42 @@ void ImgProc::unboundedLinearConvolution(const Stencil &stencil, ImgProc &out) c
     }
 }
 
+void ImgProc::boundedLinearConvolution(const Stencil &stencil, ImgProc &out) const
+{
+    out.clear( this->GetNx(), this->GetNy(), this->GetNc() );
+
+    for( int j=0;j<out.GetNy();j++)
+    { 
+        #pragma omp parallel for
+        for(int i=0;i<out.GetNx();i++)
+        {
+            std::vector<float> pixel(out.GetNc(),0.0);
+            std::vector<float> sample(this->GetNc(),0.0);
+
+            for(int jj=-stencil.getHalfW();jj<=stencil.getHalfW();jj++)
+            {
+                int stencilj = jj + stencil.getHalfW();
+                int jjj = j + jj;
+
+                for(int ii=-stencil.getHalfW();ii<=stencil.getHalfW();ii++)
+                {
+                    int stencili = ii + stencil.getHalfW();
+                    int iii = i + ii;
+
+                    const float& stencil_value = stencil(stencili, stencilj);
+                    if(iii > 0 && jjj > 0 && iii < out.GetNx() && jjj < out.GetNy() ){ 
+                        sample = this->GetValue(iii,jjj);
+                    }
+
+                    for(size_t c=0;c<sample.size();c++){ pixel[c] += sample[c] * stencil_value; }
+                }
+            }
+            
+            out.SetValue(i,j,pixel);
+        }
+    }
+}
+
 //----------------------------------------------------------------
 
 // ----------------
@@ -222,6 +258,11 @@ void image::gamma(float s, ImgProc &img)
 void image::unboundedLinearConvolution(const Stencil& stencil, const ImgProc& in, ImgProc& out) 
 {
     in.unboundedLinearConvolution(stencil, out);
+}
+
+void image::boundedLinearConvolution(const Stencil& stencil, const ImgProc& in, ImgProc& out) 
+{
+    in.boundedLinearConvolution(stencil, out);
 }
 
 //----------------------------------------------------------------
