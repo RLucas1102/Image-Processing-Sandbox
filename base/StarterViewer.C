@@ -224,7 +224,7 @@ void StarterViewer::Keyboard( unsigned char key, int x, int y )
          gamma(1.111111, image);
          break;
       case 's':
-         unboundedLinearConvolution(blur(1.0/9.0), image, temp);
+         boundedLinearConvolution(blur(1.0/9.0), image, temp);
          image = temp;
          break;
       case '+':
