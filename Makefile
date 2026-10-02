@@ -4,6 +4,7 @@ OFILES = \
          base/Matrix.o \
          base/LinearAlgebra.o \
 		 base/ImgProc.o \
+		 base/Stencil.o \
 	 	 base/StarterViewer.o
 
 ROOTDIR = .
@@ -23,6 +24,12 @@ base: $(OFILES)
 	$(CXX) base/simple_viewer.C $(INCLUDES) \
     -L./lib -lstarter $(GLLDFLAGS) \
     -o bin/simple_viewer
+
+test: $(OFILES)
+	ar rv $(LIB) $?
+	$(CXX) base/test.C $(INCLUDES) \
+    -L./lib -lstarter $(GLLDFLAGS) \
+    -o bin/test
 
 clean:
 	rm -rf bin/simple_viewer *.o base/*.o base/*~ include/*~ $(LIB)  *~ 
