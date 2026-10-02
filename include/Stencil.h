@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <iostream>
+#include <random>
 
 namespace image {
 
@@ -43,6 +44,9 @@ namespace image {
 
     // Create a blur stencil
     Stencil blur(float val);
+
+    // Create a random stencil
+    Stencil random(int halfwidth);
 
     // -------------------------------------------------------------------
 

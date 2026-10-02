@@ -66,4 +66,29 @@ Stencil image::blur(float val)
     
 }
 
+Stencil image::random(int halfwidth)
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<>dis(-0.1, 0.1);
+
+    Stencil result = Stencil(halfwidth);
+
+    float sum = 0;
+    for (int j = 0; j < stencilDim(halfwidth); j++)
+    {
+        for (int i = 0; i < stencilDim(halfwidth); i++)
+        {
+            result(i,j) = dis(gen);
+            sum += result(i,j);
+        }
+    }
+
+    sum -= result(stencilDim(halfwidth)/2, stencilDim(halfwidth)/2);
+
+    result(stencilDim(halfwidth)/2, stencilDim(halfwidth)/2) = 1.0 - sum;
+
+    return result;
+}
+
 // -------------------------------------------------------------------
