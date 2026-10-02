@@ -224,10 +224,12 @@ void StarterViewer::Keyboard( unsigned char key, int x, int y )
          gamma(1.111111, image);
          break;
       case '+':
+         break;
       case '=':
          ComputeEyeShift(0.07);
          break;
       case '-':
+         break;
       case '_':
          ComputeEyeShift(-0.07);
          break;
