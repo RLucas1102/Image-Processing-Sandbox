@@ -130,6 +130,7 @@ class StarterViewer
     static StarterViewer* pStarterViewer;
 
     ImgProc image;
+    ImgProc temp;
 
     // dont allow any of these
     StarterViewer();
