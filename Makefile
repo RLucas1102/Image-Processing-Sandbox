@@ -1,8 +1,6 @@
 
 
 OFILES = \
-         base/Matrix.o \
-         base/LinearAlgebra.o \
 		 base/ImgProc.o \
 		 base/Stencil.o \
 	 	 base/StarterViewer.o
@@ -10,11 +8,11 @@ OFILES = \
 ROOTDIR = .
 LIB = $(ROOTDIR)/lib/libstarter.a
 
-GLLDFLAGS     = -lglut -lGL -lm -lGLU -lOpenImageIO -lOpenImageIO_Util
+GLLDFLAGS     = -L /opt/homebrew/lib -lglut -lGL -lm -lGLU -lOpenImageIO -lOpenImageIO_Util
 
-CXX = g++ -Wall -g -O1 -fPIC $(DEFINES) -fopenmp -std=c++17
+CXX = clang++ -Wall -g -O1 -fPIC $(DEFINES) -fopenmp -std=c++17
 
-INCLUDES =  -I$(ROOTDIR)/include/ -I/usr/local/include/ -I/usr/include/
+INCLUDES =  -I /opt/homebrew/include/ -I$(ROOTDIR)/include/ -I/usr/local/include/ -I/usr/include/
 
 .C.o:
 	$(CXX) -c $(INCLUDES) $< -o $@
@@ -32,7 +30,7 @@ test: $(OFILES)
     -o bin/test
 
 clean:
-	rm -rf bin/simple_viewer bin/test *.o base/*.o base/*~ include/*~ $(LIB)  *~ 
+	rm -rf bin/simple_viewer bin/test bin/*dSYM *.o base/*.o base/*~ include/*~ $(LIB)  *~ 
 
 
 
