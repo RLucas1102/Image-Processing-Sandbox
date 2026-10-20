@@ -3,3 +3,9 @@
 
 # Binary files
 /bin
+
+# Object files
+/base/*.o
+
+# Library files
+/lib/*.a
