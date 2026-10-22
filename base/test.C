@@ -1,24 +1,20 @@
 #include <iostream>
 
-#include "Stencil.h"
+#include "ImgProc.h"
+#include "Fractal.h"
 
 using namespace image;
 
 int main() {
 
-    Stencil myStencil = Stencil(1);
+    ImgProc temp;
+    temp.clear(800, 800, 3);
 
-    myStencil(-1,-1) = -1;
-    myStencil(-1,0) = -1;
-    myStencil(-1,1) = -1;
-    myStencil(0,-1) = -1;
-    myStencil(0,0) =  0;
-    myStencil(0,1) = -1;
-    myStencil(1,-1) = -1;
-    myStencil(1,0) = -1;
-    myStencil(1,1) = -1;
-    
-    myStencil.print();
+    ImgProc display = temp;
+
+    circle(temp, display, 4, 10);
+
+    display.Write("images/circle.png");
 
     return 0;
 }
