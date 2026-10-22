@@ -31,7 +31,11 @@ void image::circle(const ImgProc& in,
 }
 
 
-void image::juliaSet(const ImgProc& in, ImgProc& out, float radius, float bounds) {
+void image::juliaSet(const ImgProc& in, 
+                           ImgProc& out, 
+                           float radius, 
+                           float bounds,
+                           float zoom) {
 
     std::vector<float> black(in.GetNc(),0);
     std::vector<float> white(in.GetNc(),1);
@@ -42,8 +46,8 @@ void image::juliaSet(const ImgProc& in, ImgProc& out, float radius, float bounds
             Point P;
             P.X = 2.0 * bounds * ((double)i / (double)in.GetNx()) - bounds;
             P.Y = 2.0 * bounds * ((double)j / (double)in.GetNy()) - bounds;
-            P.X *= 0.25;
-            P.Y *= 0.25;
+            P.X *= zoom;
+            P.Y *= zoom;
 
             std::complex<long double> z(P.X,P.Y);
             std::complex<long double> c(.274, -0.008);

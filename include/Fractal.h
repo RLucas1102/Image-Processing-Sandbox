@@ -20,7 +20,11 @@ namespace image {
                       float zoom);
 
     // Create a Julia set on the complex plane
-    void juliaSet(const ImgProc& in, ImgProc& out, float radius, float bounds);
+    void juliaSet(const ImgProc& in, 
+                        ImgProc& out, 
+                        float radius, 
+                        float bounds,
+                        float zoom);
 
 } // namespace img
 
