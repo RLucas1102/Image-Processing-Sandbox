@@ -12,7 +12,11 @@ int main() {
 
     ImgProc display = temp;
 
-    circle(temp, display, 4, 10);
+    float radius = 4;
+    float bounds = 5;
+    float zoom = 1;
+    // circle(temp, display, radius, bounds, zoom);
+    juliaSet(temp, display, radius, bounds);
 
     display.Write("images/circle.png");
 
