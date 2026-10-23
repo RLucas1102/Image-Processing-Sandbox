@@ -41,10 +41,13 @@ void image::juliaSet(const ImgProc& in,
 
     std::vector<float> black(in.GetNc(),0);
 
-    std::vector<float> LUT(N,0);
-    for(int m = 0; m < LUT.size(); m++) {
-        LUT[m] = (double)m/(double)N;
-    }
+    std::vector<std::vector<float>> LUT = {
+        {1.0f,1.0f,0.0f},
+        {0.0f,1.0f,0.0f},
+        {0.0f,0.0f,1.0f}
+    };
+
+    int M = LUT.size();
 
     for(int j = 0; j < in.GetNy(); j++) {
         for (int i = 0; i < in.GetNx(); i++) {
@@ -73,17 +76,26 @@ void image::juliaSet(const ImgProc& in,
 
             if (mod2(P) <= radius) { out.SetValue(i, j, black); }
             else { 
-                float t = LUT[n];
 
-                std::vector<float> red  = {1,0,0};
-                std::vector<float> blue = {0,0,1};
-                
-                std::vector<float> color(in.GetNc(), 0);
-                for (int k = 0; k < 3; k++) {
-                    color[k] = (1 - t) * red[k] + t * blue[k];
+                double weight    = (double)n/(double)N;
+                double weightLUT = (double)M * weight;
+
+                int m1 = std::floor(weightLUT);
+                if (m1 >= M) { m1 = M - 1; }
+
+                int m2 = std::ceil(weightLUT);
+                if (m2 >= M) { m2 = M - 1; }
+
+                std::vector<float> color1 = LUT[m1];
+                std::vector<float> color2 = LUT[m2];
+                std::vector<float> output(in.GetNc(), 0);
+
+                for (int m = 0; m < 3; m++) {
+                    output[m] = (1 - weight) * (double)color1[m] + weight * (double)color2[m];
                 }
 
-                out.SetValue(i, j, color);
+                out.SetValue(i, j, output);
+
             }
 
         }
