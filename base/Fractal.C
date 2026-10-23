@@ -73,7 +73,16 @@ void image::juliaSet(const ImgProc& in,
 
             if (mod2(P) <= radius) { out.SetValue(i, j, black); }
             else { 
-                std::vector<float> color(in.GetNc(), LUT[n]);
+                float t = LUT[n];
+
+                std::vector<float> red  = {1,0,0};
+                std::vector<float> blue = {0,0,1};
+                
+                std::vector<float> color(in.GetNc(), 0);
+                for (int k = 0; k < 3; k++) {
+                    color[k] = (1 - t) * red[k] + t * blue[k];
+                }
+
                 out.SetValue(i, j, color);
             }
 
