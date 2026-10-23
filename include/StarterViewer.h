@@ -22,6 +22,7 @@
 #include <vector>
 
 #include "ImgProc.h"
+#include "Fractal.h"
 
 using namespace std;
 using namespace image;

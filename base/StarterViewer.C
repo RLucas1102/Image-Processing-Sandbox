@@ -217,6 +217,11 @@ void StarterViewer::Keyboard( unsigned char key, int x, int y )
       case 'j':
          image.Write("images/demomakeanewfile.jpg");
          break;
+      case 'J':
+         temp = image;
+         juliaSet(image, temp, 4, 5, 1.0e-6, 500, {0.03811, 0.01329});
+         image = temp;
+         break;                                 
       case 'g':
          gamma(0.9, image);
          break;
