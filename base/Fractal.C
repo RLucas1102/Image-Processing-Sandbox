@@ -35,10 +35,16 @@ void image::juliaSet(const ImgProc& in,
                            ImgProc& out, 
                            float radius, 
                            float bounds,
-                           float zoom) {
+                           float zoom,
+                           int N) 
+{
 
     std::vector<float> black(in.GetNc(),0);
-    std::vector<float> white(in.GetNc(),1);
+
+    std::vector<float> LUT(N,0);
+    for(int m = 0; m < LUT.size(); m++) {
+        LUT[m] = (double)m/(double)N;
+    }
 
     for(int j = 0; j < in.GetNy(); j++) {
         for (int i = 0; i < in.GetNx(); i++) {
@@ -52,21 +58,30 @@ void image::juliaSet(const ImgProc& in,
             std::complex<long double> z(P.X,P.Y);
             std::complex<long double> c(.274, -0.008);
 
-            for (int n = 0; n < 100; n++) {
-
-                z *= z;
+            int n = 0;
+            while (mod2(P) <= radius && n < N) {
+                
+                z = std::pow(z, 2);
                 z += c;
 
                 P.X = z.real();
                 P.Y = z.imag();
+                
+                n++;
 
             }
 
-            double mag = std::sqrt(P.X * P.X + P.Y * P.Y);
-
-            if (mag <= radius) { out.SetValue(i, j, black); }
-            else { out.SetValue(i, j, white); }
+            if (mod2(P) <= radius) { out.SetValue(i, j, black); }
+            else { 
+                std::vector<float> color(in.GetNc(), LUT[n]);
+                out.SetValue(i, j, color);
+            }
 
         }
     }
+}
+
+double image::mod2(const Point& P)
+{
+    return std::sqrt(P.X * P.X + P.Y * P.Y);
 }

@@ -24,7 +24,11 @@ namespace image {
                         ImgProc& out, 
                         float radius, 
                         float bounds,
-                        float zoom);
+                        float zoom,
+                        int N);
+
+    // Find magnitude of a complex number
+    double mod2(const Point& P);
 
 } // namespace img
 

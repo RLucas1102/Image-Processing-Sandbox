@@ -15,8 +15,9 @@ int main() {
     float radius = 4;
     float bounds = 5;
     float zoom = 0.1;
+    float N = 100;
     // circle(temp, display, radius, bounds, zoom);
-    juliaSet(temp, display, radius, bounds, zoom);
+    juliaSet(temp, display, radius, bounds, zoom, N);
 
     display.Write("images/circle.png");
 
