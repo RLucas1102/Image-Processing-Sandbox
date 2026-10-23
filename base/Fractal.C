@@ -35,8 +35,9 @@ void image::juliaSet(const ImgProc& in,
                            ImgProc& out, 
                            float radius, 
                            float bounds,
-                           float zoom,
-                           int N) 
+                           double zoom,
+                           int N,
+                     const Point& center) 
 {
 
     std::vector<float> black(in.GetNc(),0);
@@ -50,6 +51,7 @@ void image::juliaSet(const ImgProc& in,
     int M = LUT.size();
 
     for(int j = 0; j < in.GetNy(); j++) {
+        #pragma omp parallel for
         for (int i = 0; i < in.GetNx(); i++) {
 
             Point P;
@@ -57,9 +59,11 @@ void image::juliaSet(const ImgProc& in,
             P.Y = 2.0 * bounds * ((double)j / (double)in.GetNy()) - bounds;
             P.X *= zoom;
             P.Y *= zoom;
+            P.X += center.X;
+            P.Y += center.Y;
 
             std::complex<long double> z(P.X,P.Y);
-            std::complex<long double> c(.274, -0.008);
+            std::complex<long double> c(0.8 * std::cos(254.3 * 3.14159265/180.0), 0.8 * std::sin(254.3 * 3.14159265/180.0));
 
             int n = 0;
             while (mod2(P) <= radius && n < N) {
