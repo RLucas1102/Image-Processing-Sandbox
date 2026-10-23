@@ -9,3 +9,6 @@
 
 # Library files
 /lib/*.a
+
+# Exr files
+*.exr
