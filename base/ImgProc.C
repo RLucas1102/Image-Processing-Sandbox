@@ -242,6 +242,85 @@ void ImgProc::boundedLinearConvolution(const Stencil &stencil, ImgProc &out) con
     }
 }
 
+void ImgProc::contrastUnits(ImgProc& out) const
+{
+    out.clear( this->GetNx(), this->GetNy(), this->GetNc() );
+
+    std::vector<float> Cavg(out.GetNc(), 0.0);
+
+    for( int j = 0; j < out.GetNy(); j++){
+
+        #pragma omp parallel for
+        for( int i = 0; i < out.GetNx(); i++){
+
+            for( int c = 0; c < out.GetNc(); c++){
+                Cavg[c] += out.GetValue(i, j)[c];
+            }
+
+        }
+    }
+
+    for( int i = 0; i < Cavg.size(); i++) {
+        Cavg[i] /= (out.GetNx() * out.GetNy());
+    }
+    
+    for( int j = 0; j < out.GetNy(); j++){
+        
+        std::vector<float> pixel(out.GetNc(),0.0);
+
+        #pragma omp parallel for
+        for( int i = 0; i < out.GetNx(); i++){
+
+            pixel = GetValue(i, j);
+
+            for( int c = 0; c < out.GetNc(); c++){
+                pixel[c] -= Cavg[c];                 
+            }
+
+            out.SetValue(i,j,pixel);
+
+        }
+    }
+
+    std::vector<float> Cvar(out.GetNc(), 0.0);
+
+
+    for( int j = 0; j < out.GetNy(); j++){
+
+        #pragma omp parallel for
+        for( int i = 0; i < out.GetNx(); i++){
+
+            for( int c = 0; c < out.GetNc(); c++){
+                Cvar[c] += (out.GetValue(i, j)[c] * out.GetValue(i, j)[c]);          
+            }
+
+        }
+    }
+    
+    for( int i = 0; i < Cvar.size(); i++) {
+        Cvar[i] /= (out.GetNx() * out.GetNy());
+    }
+
+    for( int j = 0; j < out.GetNy(); j++){
+        
+        std::vector<float> pixel(out.GetNc(),0.0);
+
+        #pragma omp parallel for
+        for( int i = 0; i < out.GetNx(); i++){
+
+            pixel = GetValue(i, j);
+
+            for( int c = 0; c < out.GetNc(); c++){
+                pixel[c] /= std::sqrt(Cvar[c]);                 
+            }
+
+            out.SetValue(i,j,pixel);
+
+        }
+    }
+
+}
+
 //----------------------------------------------------------------
 
 // ----------------
@@ -263,6 +342,11 @@ void image::unboundedLinearConvolution(const Stencil& stencil, const ImgProc& in
 void image::boundedLinearConvolution(const Stencil& stencil, const ImgProc& in, ImgProc& out) 
 {
     in.boundedLinearConvolution(stencil, out);
+}
+
+void image::contrastUnits(const ImgProc& in, ImgProc& out)
+{
+    in.contrastUnits(out);
 }
 
 //----------------------------------------------------------------
