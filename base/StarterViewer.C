@@ -207,6 +207,10 @@ void StarterViewer::Keyboard( unsigned char key, int x, int y )
 {
    switch (key)
    {
+      case 'C':
+         contrastUnits(image, temp);
+         image = temp;
+         break;
       case 'f':
          camera_fov /= 1.01;
          break;
@@ -219,7 +223,7 @@ void StarterViewer::Keyboard( unsigned char key, int x, int y )
          break;
       case 'J':
          temp = image;
-         juliaSet(image, temp, 4, 5, 1.0e-6, 500, {0.03811, 0.01329});
+         juliaSet(image, temp, 4, 5, 1.0e-3, 500, {0.03811, 0.01329});
          image = temp;
          break;                                 
       case 'g':
