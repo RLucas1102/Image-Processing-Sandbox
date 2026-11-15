@@ -45,7 +45,9 @@ void image::juliaSet(const ImgProc& in,
     std::vector<std::vector<float>> LUT = {
         {1.0f,1.0f,0.0f},
         {0.0f,1.0f,0.0f},
-        {0.0f,0.0f,1.0f}
+        {0.0f,0.0f,1.0f},
+        {0.0f,1.0f,1.0f},
+        {1.0f,0.0f,1.0f}
     };
 
     int M = LUT.size();
