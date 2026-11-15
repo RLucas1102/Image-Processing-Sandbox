@@ -250,11 +250,10 @@ void ImgProc::contrastUnits(ImgProc& out) const
 
     for( int j = 0; j < out.GetNy(); j++){
 
-        #pragma omp parallel for
         for( int i = 0; i < out.GetNx(); i++){
 
             for( int c = 0; c < out.GetNc(); c++){
-                Cavg[c] += out.GetValue(i, j)[c];
+                Cavg[c] += this->GetValue(i, j)[c];
             }
 
         }
@@ -268,10 +267,9 @@ void ImgProc::contrastUnits(ImgProc& out) const
         
         std::vector<float> pixel(out.GetNc(),0.0);
 
-        #pragma omp parallel for
         for( int i = 0; i < out.GetNx(); i++){
 
-            pixel = GetValue(i, j);
+            pixel = this->GetValue(i, j);
 
             for( int c = 0; c < out.GetNc(); c++){
                 pixel[c] -= Cavg[c];                 
@@ -284,10 +282,8 @@ void ImgProc::contrastUnits(ImgProc& out) const
 
     std::vector<float> Cvar(out.GetNc(), 0.0);
 
-
     for( int j = 0; j < out.GetNy(); j++){
 
-        #pragma omp parallel for
         for( int i = 0; i < out.GetNx(); i++){
 
             for( int c = 0; c < out.GetNc(); c++){
@@ -305,10 +301,9 @@ void ImgProc::contrastUnits(ImgProc& out) const
         
         std::vector<float> pixel(out.GetNc(),0.0);
 
-        #pragma omp parallel for
         for( int i = 0; i < out.GetNx(); i++){
 
-            pixel = GetValue(i, j);
+            pixel = out.GetValue(i, j);
 
             for( int c = 0; c < out.GetNc(); c++){
                 pixel[c] /= std::sqrt(Cvar[c]);                 
