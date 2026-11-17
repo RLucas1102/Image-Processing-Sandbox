@@ -316,6 +316,79 @@ void ImgProc::contrastUnits(ImgProc& out) const
 
 }
 
+void ImgProc::histogramEqualize(ImgProc& out, int numBins) const
+{
+    out.clear( _Nx, _Ny, _Nc );
+
+    auto createBins = [](int num){ 
+
+        std::vector<float> bins(num, 0.0f);
+
+        return bins; 
+    };
+
+    std::vector<std::vector<float>> histogram(_Nc, createBins(numBins));
+    std::vector<std::vector<float>> pdf(_Nc, createBins(numBins));
+    std::vector<std::vector<float>> cdf(_Nc, createBins(numBins));
+    std::vector<float> emax(_Nc, 0.0);
+    std::vector<float> emin(_Nc, 0.0);
+
+    for(int c = 0; c < _Nc; ++c) {
+
+        std::vector<float> channelVals(_Nx * _Ny, 0.0);
+
+        for(int j = 0; j < _Ny; ++j) {
+            for(int i = 0; i < _Nx; ++i) {
+                channelVals[i + _Nx * j] = GetValue(i, j)[c];
+            }
+        }
+
+        emin[c] = *(std::min_element(channelVals.begin(), channelVals.end()));
+        emax[c] = *(std::max_element(channelVals.begin(), channelVals.end()));
+        float de   = (emax[c] - emin[c]) / numBins;
+
+        for(int i = 0; i < channelVals.size(); ++i) {
+            int bin = (int)((channelVals[i] - emin[c]) / de);
+            if (bin >= 0 && bin < numBins) { histogram[c][bin] += 1; }
+        }
+
+        int sum = std::accumulate(histogram[c].begin(), histogram[c].end(), 0);
+
+        for(int i = 0; i < pdf[c].size(); ++i) {
+            pdf[c][i] = histogram[c][i] / sum;
+        }
+
+        for(int j = 0; j < cdf[c].size(); ++j) {
+            for(int i = 0; i < j; ++i) {
+                cdf[c][j] += pdf[c][i];
+            }
+        }
+
+    }
+
+    for(int j = 0; j < _Ny; ++j) {
+        
+        std::vector<float> pixel(out.GetNc(),0.0);
+        
+        for(int i = 0; i < _Nx; ++i) {
+            
+            pixel = GetValue(i, j);
+
+            for(int c = 0; c < _Nc; ++c) {
+                float de   = (emax[c] - emin[c]) / numBins;
+                int bin = (int)((pixel[c] - emin[c]) / de);
+                if (bin >= 0 && bin < numBins) { 
+                    pixel[c] = cdf[c][bin];
+                }
+            }
+
+            out.SetValue(i, j, pixel);
+
+        }
+    }
+
+}
+
 //----------------------------------------------------------------
 
 // ----------------
@@ -342,6 +415,11 @@ void image::boundedLinearConvolution(const Stencil& stencil, const ImgProc& in, 
 void image::contrastUnits(const ImgProc& in, ImgProc& out)
 {
     in.contrastUnits(out);
+}
+
+void image::histogramEqualize(const ImgProc& in, ImgProc& out, int numBins)
+{
+    in.histogramEqualize(out, numBins);
 }
 
 //----------------------------------------------------------------

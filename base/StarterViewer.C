@@ -211,6 +211,10 @@ void StarterViewer::Keyboard( unsigned char key, int x, int y )
          contrastUnits(image, temp);
          image = temp;
          break;
+      case 'H':
+         histogramEqualize(image, temp, 500);
+         image = temp;
+         break;
       case 'f':
          camera_fov /= 1.01;
          break;

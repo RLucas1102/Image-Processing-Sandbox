@@ -70,6 +70,7 @@ namespace image {
             
             // Image statistics
             void contrastUnits(ImgProc& out) const;
+            void histogramEqualize(ImgProc& out, int numBins) const;
 
     };
 
@@ -87,6 +88,9 @@ namespace image {
 
     // Constrast units
     void contrastUnits(const ImgProc& in, ImgProc& out);
+
+    // Histogram Equalization
+    void histogramEqualize(const ImgProc& in, ImgProc& out, int numBins);
 
     // -------------------------------------------------------------------
 
