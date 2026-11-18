@@ -9,11 +9,11 @@ OFILES = \
 ROOTDIR = .
 LIB = $(ROOTDIR)/lib/libstarter.a
 
-GLLDFLAGS     = -L /opt/homebrew/lib -lglut -lGL -lm -lGLU -lOpenImageIO -lOpenImageIO_Util
+GLLDFLAGS = -lglut -lGL -lm -lGLU -lOpenImageIO -lOpenImageIO_Util
 
-CXX = clang++ -Wall -g -O1 -fPIC $(DEFINES) -fopenmp -std=c++17
+CXX = g++ -Wall -g -O2 -fPIC $(DEFINES) -fopenmp -std=c++17
 
-INCLUDES =  -I /opt/homebrew/include/ -I$(ROOTDIR)/include/ -I/usr/local/include/ -I/usr/include/
+INCLUDES = -I$(ROOTDIR)/include/ -I/usr/local/include/ -I/usr/include/
 
 .C.o:
 	$(CXX) -c $(INCLUDES) $< -o $@
